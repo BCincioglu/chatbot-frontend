@@ -3,27 +3,25 @@ import axios from 'axios';
 import './Chatbot.css';
 
 const Chatbot = () => {
-  const [messages, setMessages] = useState([]); // Mesajları tutmak için
-  const [currentQuestion, setCurrentQuestion] = useState(''); // Şu anki soru
-  const [userInput, setUserInput] = useState(''); // Kullanıcının girdiği yanıt
-  const [sessionId, setSessionId] = useState(localStorage.getItem('sessionId') || ''); // LocalStorage'dan sessionId alınıyor
-  const [errorMessage, setErrorMessage] = useState(''); // Hata mesajı
-  const [typingMessage, setTypingMessage] = useState(''); // Daktilo efekti için geçici mesaj
-  const [isTyping, setIsTyping] = useState(false); // Daktilo efekti devam ediyor mu
-  const messagesEndRef = useRef(null); // Mesaj penceresinin en altını referans almak için
-  const intervalRef = useRef(null); // setInterval için referans
-  const [isSessionComplete, setIsSessionComplete] = useState(false); // Oturumun tamamlanıp tamamlanmadığını kontrol etmek için
-  const chatWindowRef = useRef(null); // Sohbet penceresine referans
+  const [messages, setMessages] = useState([]); 
+  const [currentQuestion, setCurrentQuestion] = useState(''); 
+  const [userInput, setUserInput] = useState(''); 
+  const [sessionId, setSessionId] = useState(localStorage.getItem('sessionId') || ''); 
+  const [errorMessage, setErrorMessage] = useState(''); 
+  const [typingMessage, setTypingMessage] = useState(''); 
+  const [isTyping, setIsTyping] = useState(false); 
+  const messagesEndRef = useRef(null); 
+  const intervalRef = useRef(null); 
+  const [isSessionComplete, setIsSessionComplete] = useState(false);
+  const chatWindowRef = useRef(null);
 
   
 
 
   useEffect(() => {
     if (sessionId) {
-      // Eğer sessionId varsa, var olan oturuma devam et
       continueSession(sessionId);
     } else {
-      // Yeni session başlat
       startSession();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -33,17 +31,15 @@ const Chatbot = () => {
     console.log(chatWindowRef);
     if (chatWindowRef.current) {
         console.log(chatWindowRef.current);
-      // Sohbet penceresinin scroll konumunu en üstte tut
       chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
 
       console.log(chatWindowRef.current.scrollTop);
     }
-  }, [messages]); // Mesajlar her güncellendiğinde çalışır
+  }, [messages]); 
   
   
   
 
-  // Kullanıcının geçmiş konuşmalarını getir
   const fetchHistory = async (sessionId) => {
     try {
       const response = await axios.get(`http://localhost:5050/api/history?sessionId=${sessionId}`);
@@ -52,8 +48,8 @@ const Chatbot = () => {
         const formattedHistory = history.map(item => [
           { from: 'bot', text: item.question },
           { from: 'user', text: item.answer },
-        ]).flat(); // Bot'un sorusunu ve kullanıcının cevabını ekle
-        setMessages(formattedHistory); // Geçmiş mesajları messages state'ine ekle
+        ]).flat(); 
+        setMessages(formattedHistory);
       }
     } catch (error) {
       console.error('Error fetching session history:', error);
@@ -61,11 +57,11 @@ const Chatbot = () => {
     }
   };
 
-  // Daktilo efektiyle yazdırma
+  // Typewriter effect
   const typeWriterEffect = (text) => {
     let index = 0;
-    setTypingMessage(''); // Önce geçici mesajı sıfırla
-    setIsTyping(true); // Yazma efekti başladı
+    setTypingMessage(''); 
+    setIsTyping(true); 
 
     intervalRef.current = setInterval(() => {
       if (index < text.length) {
@@ -73,27 +69,27 @@ const Chatbot = () => {
         index++;
       } else {
         clearInterval(intervalRef.current);
-        setIsTyping(false); // Yazma efekti tamamlandı
+        setIsTyping(false); 
         setMessages((prevMessages) => [
           ...prevMessages,
-          { from: 'bot', text: text }, // Tam mesajı messages dizisine ekliyoruz
+          { from: 'bot', text: text }, 
         ]);
-        setTypingMessage(''); // TypingMessage'ı sıfırlıyoruz
+        setTypingMessage(''); 
       }
-    }, 25); // Her harfi 50ms aralıklarla yazdır
+    }, 25); 
   };
 
   const startSession = async () => {
     try {
-      const generatedSessionId = Math.random().toString(36).substr(2, 9); // Rastgele oturum kimliği oluştur
+      const generatedSessionId = Math.random().toString(36).substr(2, 9); 
       const sessionResponse = await axios.post('http://localhost:5050/api/start-session', {
         sessionId: generatedSessionId,
       });
 
       const newSessionId = sessionResponse.data.sessionId || generatedSessionId;
       setSessionId(newSessionId);
-      localStorage.setItem('sessionId', newSessionId); // SessionId'yi LocalStorage'a kaydet
-      fetchQuestion(newSessionId); // İlk soruyu getir
+      localStorage.setItem('sessionId', newSessionId); 
+      fetchQuestion(newSessionId); 
     } catch (error) {
       console.error('Error starting session:', error);
       setErrorMessage('Error starting session, please try again.');
@@ -102,9 +98,7 @@ const Chatbot = () => {
 
   const continueSession = async (sessionId) => {
     try {
-      // Geçmiş konuşmaları getir
       await fetchHistory(sessionId);
-      // Devam eden session için kaldığı soruyu getir
       fetchQuestion(sessionId);
     } catch (error) {
       console.error('Error continuing session:', error);
@@ -120,11 +114,10 @@ const Chatbot = () => {
       if (!botMessage || typeof botMessage !== 'string') {
         throw new Error('Invalid bot message');
       } else if (botMessage === 'Thank you! The session is now complete.') {
-        setIsSessionComplete(true); // Oturum tamamlandı
-        localStorage.removeItem('sessionId'); // Oturum bitince sessionId'yi kaldır
+        setIsSessionComplete(true); 
+        localStorage.removeItem('sessionId'); 
       }
 
-      // Daktilo efektiyle bot mesajını yazdır
       typeWriterEffect(botMessage);
       setCurrentQuestion(botMessage);
     } catch (error) {
@@ -135,9 +128,7 @@ const Chatbot = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (userInput.trim() === '') return; // Boş yanıt verilmişse işlem yapma
-
-    // Kullanıcı cevabını mesajlar dizisine ekle
+    if (userInput.trim() === '') return; 
     setMessages((prevMessages) => [
       ...prevMessages,
       { from: 'user', text: userInput },
@@ -145,8 +136,7 @@ const Chatbot = () => {
 
     try {
 
-      setUserInput(''); // Yanıt kutusunu temizle
-      // Yanıtı backend'e gönder
+      setUserInput(''); 
       await axios.post('http://localhost:5050/api/answer', {
         sessionId,
         question: currentQuestion,
@@ -154,7 +144,6 @@ const Chatbot = () => {
       });
 
 
-      // Yeni soru getir
       fetchQuestion(sessionId);
     } catch (error) {
       console.error('Error saving answer:', error);
@@ -173,17 +162,14 @@ const Chatbot = () => {
             {message.text}
           </div>
         ))}
-        {/* Bot mesajı daktilo efekti sırasında ayrı gösteriliyor */}
         {isTyping && (
           <div className="message-bubble bot-message">
             {typingMessage}
           </div>
         )}
-        {/* Mesajların en altına referans noktası ekliyoruz */}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Hata mesajını gösterme */}
       {errorMessage && <div className="error-message">{errorMessage}</div>}
 
       {!isSessionComplete && (
