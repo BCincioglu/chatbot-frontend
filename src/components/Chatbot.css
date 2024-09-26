@@ -1,0 +1,93 @@
+/* Chatbot genel stil */
+.chatbot-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  max-width: 105%;
+  height: 95vh;
+  margin: 0 auto;
+  background-color: #1c1c1c; /* Koyu gri arka plan */
+  padding: 25px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Mesaj penceresi */
+.chat-window {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  background-color: #121212; /* Daha koyu arka plan */
+  border-radius: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column-reverse; /* Mesajları ters sırada göstermek için */
+}
+
+/* Mesaj balonları */
+.message-bubble {
+  max-width: 60%;
+  padding: 10px 15px;
+  margin: 5px 0;
+  border-radius: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  position: relative;
+}
+
+/* Bot mesajları sağa hizalı */
+.bot-message {
+  background-color: #2e2e2e; /* Koyu gri bot mesajı */
+  color: #ffffff; /* Beyaz yazı */
+  align-self: flex-end;
+  text-align: right;
+  border-radius: 10px 10px 0 10px; /* Sağ köşeleri yuvarlat */
+}
+
+/* Kullanıcı mesajları sola hizalı */
+.user-message {
+  background-color: #00796b; /* Koyu yeşil kullanıcı mesajı */
+  color: #ffffff; /* Beyaz yazı */
+  align-self: flex-start;
+  text-align: left;
+  border-radius: 10px 10px 10px 0; /* Sol köşeleri yuvarlat */
+}
+
+/* Input ve buton */
+.input-container {
+  display: flex;
+  border-top: 1px solid #444;
+  padding: 10px;
+  background-color: #2e2e2e;
+}
+
+.input-field {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #555;
+  border-radius: 10px;
+  margin-right: 10px;
+  font-size: 14px;
+  background-color: #1c1c1c;
+  color: #fff;
+}
+
+.send-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.send-button:hover {
+  background-color: #388e3c;
+}
+
+/* Hata mesajı */
+.error-message {
+  color: #ff5252;
+  font-size: 14px;
+  margin: 10px 0;
+}
