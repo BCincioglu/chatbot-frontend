@@ -10,7 +10,7 @@ This is the frontend of the Chatbot Application, built with ReactJS. The fronten
 First, clone the repository to your local machine using the following command:
 
 ```sh
-git clone https://github.com/BCincioglu/Chatbot_Frontend.git
+git clone https://github.com/BCincioglu/chatbot-frontend.git
 ```
 
 ### 2. Install Dependencies
@@ -18,7 +18,7 @@ git clone https://github.com/BCincioglu/Chatbot_Frontend.git
 Navigate into the project directory and install the necessary dependencies:
 
 ```sh
-cd chatbot-backend
+cd chatbot-frontend
 npm install
 ```
 
